@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ramadan Productivity Tracker 🌙</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="page-wrapper">
+
+        <!-- HEADER -->
+        <header class="site-header fade-up d1">
+            <div class="header-inner">
+
+                <div class="header-top">
+                    <!-- Brand -->
+                    <div class="header-brand">
+                        <div class="moon-wrap">
+                            <svg class="moon-svg" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <radialGradient id="moonGrad" cx="40%" cy="35%" r="65%">
+                                        <stop offset="0%" stop-color="#f0d88a" />
+                                        <stop offset="100%" stop-color="#b8882a" />
+                                    </radialGradient>
+                                </defs>
+                                <path
+                                    d="M36 10 C24 10, 14 19, 14 30 C14 41, 24 50, 36 50 C28 46, 22 39, 22 30 C22 21, 28 14, 36 10 Z"
+                                    fill="url(#moonGrad)" />
+                                <circle cx="42" cy="14" r="2" fill="#f0d88a" opacity="0.9" />
+                                <circle cx="46" cy="26" r="1.3" fill="#f0d88a" opacity="0.7" />
+                                <circle cx="38" cy="6" r="1" fill="#f0d88a" opacity="0.6" />
+                            </svg>
+                        </div>
+
+                        <div class="header-title-group">
+                            <h1>رمضان كريم</h1>
+                            <p class="subtitle">Ramadan Productivity Tracker</p>
+                        </div>
+                    </div>
+
+                    <!-- Date + Location button -->
+                    <div class="header-meta">
+                        <div class="date-pill" id="gregorianDate">Loading...</div>
+
+                        <!-- Location dropdown -->
+                        <div class="loc-dropdown-wrap" id="locDropdownWrap">
+                            <button class="area-btn" id="areaBtn" onclick="toggleLocDropdown()">
+                                <span id="areaBtnLabel">Select Location</span>
+                            </button>
+                            <div class="loc-dropdown" id="locDropdown">
+                                <!-- Division -->
+                                <div class="loc-step" id="stepDivision">
+                                    <p class="loc-step-label">Select Division</p>
+                                    <div class="loc-options" id="divisionOptions"></div>
+                                </div>
+                                <!-- District -->
+                                <div class="loc-step hidden" id="stepDistrict">
+                                    <button class="loc-back" onclick="goBackTo('division')">← Back</button>
+                                    <p class="loc-step-label" id="districtStepLabel">Select District</p>
+                                    <div class="loc-options" id="districtOptions"></div>
+                                </div>
+                                <!-- Upazila -->
+                                <div class="loc-step hidden" id="stepUpazila">
+                                    <button class="loc-back" onclick="goBackTo('district')">← Back</button>
+                                    <p class="loc-step-label" id="upazilaStepLabel">Select Upazila</p>
+                                    <div class="loc-options" id="upazilaOptions"></div>
+                                </div>
+                                <p class="loc-status" id="locStatus"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Ayah -->
+                <div class="ayah-banner">
+                    <p class="ayah-arabic">﴿ شَهْرُ رَمَضَانَ الَّذِي أُنزِلَ فِيهِ الْقُرْآنُ هُدًى لِّلنَّاسِ ﴾</p>
+                    <p class="ayah-translation">The month of Ramadan in which the Quran was revealed, a guidance for
+                        mankind — [2:185]</p>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- ── Row 1: Daily Score + Fasting ── -->
+            <div class="two-col">
+
+                <!-- Daily Score -->
+                <div class="card fade-up d2">
+                    <p class="card-label">📊 Daily Score</p>
+                    <div class="score-wrap">
+
+                        <!-- SVG Ring -->
+                        <div class="ring-box">
+                            <svg class="ring-svg" viewBox="0 0 110 110">
+                                <defs>
+                                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#c8a84b" />
+                                        <stop offset="100%" stop-color="#f0d88a" />
+                                    </linearGradient>
+                                </defs>
+                                <circle class="ring-track" cx="55" cy="55" r="45" />
+                                <circle class="ring-progress" id="scoreRing" cx="55" cy="55" r="45" />
+                            </svg>
+                            <div class="ring-center">
+                                <span class="pct" id="scorePct">0%</span>
+                                <span class="label">Today</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini progress bars -->
+                        <div class="mini-bars">
+                            <div class="mini-bar-row">
+                                <div class="mini-bar-top">
+                                    <span>Prayers</span>
+                                    <span id="prayerLbl">0/6</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" id="prayerBarMini" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div class="mini-bar-row">
+                                <div class="mini-bar-top">
+                                    <span>Quran</span>
+                                    <span id="quranLbl">0 pg</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" id="quranBarMini" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div class="mini-bar-row">
+                                <div class="mini-bar-top">
+                                    <span>Dhikr</span>
+                                    <span id="dhikrLbl">0/100</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill purple-fill" id="dhikrBarMini" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fasting Card -->
+                <div class="card fade-up d2">
+                    <p class="card-label">🌙 Fasting — Sawm</p>
+
+                    <div class="fasting-toggle-row">
+                        <div class="fasting-label">
+                            <p class="title">Am I fasting today?</p>
+                            <p class="sub">Toggle to mark your roza</p>
+                        </div>
+                        <label class="toggle-wrap">
+                            <input type="checkbox" id="fastingToggle" onchange="updateScore()" />
+                            <div class="toggle-track">
+                                <div class="toggle-thumb"></div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="time-boxes">
+                        <div class="time-box">
+                            <div class="icon">🌅</div>
+                            <div class="label">Sehri Ends</div>
+                            <div class="val" id="sehriTime">—</div>
+                        </div>
+                        <div class="time-box">
+                            <div class="icon">🌇</div>
+                            <div class="label">Iftar Time</div>
+                            <div class="val" id="iftarTime">—</div>
+                        </div>
+                    </div>
+
+                    <div class="countdown-row">
+                        <span>Time until Iftar</span>
+                        <span id="iftarCountdown">Select Your Location</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill green-fill" id="iftarBar" style="width:0%"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Row 2: Prayer Tracker ── -->
+            <div class="card fade-up d3">
+                <p class="card-label">🕌 Prayer Tracker — Salah</p>
+                <div class="prayer-grid" id="prayerGrid">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- ── Row 3: Quran + Dhikr ── -->
+            <div class="two-col">
+
+                <!-- Quran Progress -->
+                <div class="card fade-up d4">
+                    <p class="card-label">📖 Quran Progress</p>
+
+                    <div class="quran-counter-row">
+                        <div class="info">
+                            <p class="name">Pages Read Today</p>
+                            <p class="goal">Goal: 20 pages = 1 Juz</p>
+                        </div>
+                        <div class="counter-group">
+                            <button class="cnt-btn" onclick="changePages(-1)">−</button>
+                            <span class="cnt-val" id="pagesNum">0</span>
+                            <button class="cnt-btn" onclick="changePages(1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="mini-bar-top" style="margin-bottom:5px;">
+                        <span class="text-xs" style="color:var(--text-muted)">Today's target</span>
+                        <span class="text-xs" style="color:var(--text-primary)" id="pagesPct">0%</span>
+                    </div>
+                    <div class="bar-track" style="height:8px; margin-bottom:14px;">
+                        <div class="bar-fill" id="pagesBar" style="width:0%"></div>
+                    </div>
+
+                    <div class="quran-stats">
+                        <div class="qstat-box">
+                            <div class="q-label">Juz Done</div>
+                            <div class="q-val gold" id="juzDone">0</div>
+                        </div>
+                        <div class="qstat-box">
+                            <div class="q-label">Remaining</div>
+                            <div class="q-val" id="pagesLeft">20</div>
+                        </div>
+                        <div class="qstat-box">
+                            <div class="q-label">Total</div>
+                            <div class="q-val" id="totalPagesNum">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dhikr / Tasbih -->
+                <div class="card fade-up d4">
+                    <p class="card-label">📿 Dhikr & Tasbih</p>
+
+                    <div class="dhikr-tabs" id="dhikrTabs">
+                        <button class="dtab active" onclick="selectDhikr(0)">SubhanAllah</button>
+                        <button class="dtab" onclick="selectDhikr(1)">Alhamdulillah</button>
+                        <button class="dtab" onclick="selectDhikr(2)">Allahu Akbar</button>
+                    </div>
+
+                    <p class="dhikr-arabic" id="dhikrArabic">سُبْحَانَ اللَّهِ</p>
+
+                    <button class="tasbih-btn" onclick="tapTasbih()" id="tasbihBtnEl">
+                        <span class="t-icon">📿</span>
+                        <span class="t-count" id="tasbihNum">0</span>
+                    </button>
+
+                    <button class="tasbih-reset" onclick="resetTasbih()">Reset counter</button>
+
+                    <div style="margin-top:12px;">
+                        <div class="countdown-row">
+                            <span>Total Dhikr</span>
+                            <span id="dhikrTotal">0 / 100</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill purple-fill" id="dhikrBarFull" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Row 4: Good Deeds ── -->
+            <div class="card fade-up d5">
+                <p class="card-label">✨ Good Deeds</p>
+                <div class="deeds-grid" id="deedsGrid">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- ── Row 5: Weekly Streak ── -->
+            <div class="card fade-up d6">
+                <p class="card-label">📅 Weekly Streak</p>
+                <div class="week-row" id="weekRow">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- ── Action Buttons ── -->
+            <div class="action-row fade-up d6">
+                <button class="btn-reset" onclick="resetDay()">🔄 Reset Day</button>
+                <button class="btn-save" onclick="saveProgress()">✅ Save Progress</button>
+            </div>
+
+        </main>
+    </div><!-- /page-wrapper -->
+
+    <!-- Toast notification -->
+    <div class="toast" id="toastEl"></div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+
+</html>
